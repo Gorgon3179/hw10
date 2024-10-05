@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Import Vega & Vega-Lite -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.5.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.21.0"></script>
+  
+  <!-- CSS file -->
+  <link rel="stylesheet" type="text/css" href="css/styles.css" media="all">
+</head>
+<body>
+
+  <div id="title">
+    <h1>Global Trade Overview</h1>
+  </div>
+
+  <!-- Stacked Area Chart comes first -->
+  <div id="stacked-area-container">
+    <h2>Trade Balance - Exports and Imports Over Time</h2>
+    <div id="stacked-area"></div>
+  </div>
+
+  <!-- Map reduced in size and placed below -->
+  <div id="map-container">
+    <h2>World Map with Export Data</h2>
+    <div id="map"></div>
+  </div>
+
+  <script type="text/javascript">
+    // Stacked area chart visualization
+    var stackedAreaSpec = "js/stacked.area.merged.detail2.vg.json";
+    vegaEmbed('#stacked-area', stackedAreaSpec).then(function(result) {
+      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    }).catch(console.error);
+
+    // Map visualization, placed below the stacked chart and smaller in size
+    var mapSpec = "js/map.vg.json";
+    vegaEmbed('#map', mapSpec).then(function(result) {
+      // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+    }).catch(console.error);
+  </script>
+
+</body>
+</html>
