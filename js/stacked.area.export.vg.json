@@ -1,0 +1,88 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 1000,  
+    "data": { "url": "https://raw.githubusercontent.com/Gorgon3179/hw10/main/export_long.csv" },
+    "params": [
+      {
+        "name": "Category_selection",
+        "bind": {
+          "input": "select",
+          "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          "labels": ["Code 0", "Code 1", "Code 2", "Code 3", "Code 4", "Code 5", "Code 6", "Code 7", "Code 8", "Code 9"],
+          "name": "Select Code: "
+        },
+        "value": 0
+      }
+    ],
+    "vconcat": [
+      {
+        "mark": {
+          "type": "area",
+          "interpolate": "monotone"
+        },
+        "width": 1000,  
+        "height": 500,  
+        "transform": [
+          {
+            "filter": "datum.code == Category_selection"
+          },
+          {
+            "filter": {"param": "brush"}
+          }
+        ],
+        "encoding": {
+          "x": {
+            "field": "date",
+            "type": "temporal",
+            "title": "Date",
+            "timeUnit": "yearmonth"
+          },
+          "y": {
+            "aggregate": "sum",
+            "field": "exports",
+            "type": "quantitative",
+            "title": "Millions of Dollars in Imports"
+          },
+          "color": {
+            "field": "subcode",
+            "type": "nominal",
+            "title": "Subcategory"
+          },
+          "tooltip": [
+            { "field": "subcode", "type": "nominal", "title": "Subcategory" },
+            { "field": "date", "type": "temporal", "title": "Date", "timeUnit": "yearmonth" },
+            { "field": "exports", "type": "quantitative", "title": "Millions of Dollars", "aggregate": "sum" }
+          ]
+        }
+      },
+      {
+        "width": 1000,  
+        "height": 120,  
+        "mark": "line",
+        "params": [
+          {
+            "name": "brush",
+            "select": {
+              "type": "interval",
+              "encodings": ["x"]
+            }
+          }
+        ],
+        "encoding": {
+          "x": {
+            "field": "date",
+            "type": "temporal",
+            "title": "Brush to Select Time",
+            "timeUnit": "yearmonth"
+          },
+          "y": {
+            "aggregate": "count",
+            "field": "date",
+            "type": "quantitative",
+            "title": "Count of Data Points",
+            "axis": {"tickCount": 3, "grid": false}
+          }
+        }
+      }
+    ]
+  }

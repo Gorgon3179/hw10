@@ -1,0 +1,174 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 800,
+    "height": 600,
+    "data": { "url": "https://raw.githubusercontent.com/Gorgon3179/hw10/main/mergeddetail3.csv" },
+    "params": [
+      {
+        "name": "Category_selection",
+        "bind": {
+          "input": "select",
+          "options": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          "labels": [
+            "Food and live animals",
+            "Beverages and tobacco",
+            "Crude materials, inedible, except fuels",
+            "Mineral fuels, lubricants and related materials",
+            "Animal and vegetable oils, fats and waxes",
+            "Chemicals and related products, nes",
+            "Manufactured goods classified chiefly by material",
+            "Machinery and transport equipment",
+            "Miscellaneous manufactured articles",
+            "Commodities and transactions not classified elsewhere in the SITC"
+          ],
+          "name": "Category of Goods: "
+        },
+        "value": 6
+      }
+    ],
+    "vconcat": [
+      {
+        "layer": [
+          {
+            "mark": {
+              "type": "area",
+              "interpolate": "monotone"
+            },
+            "width": 1000,
+            "height": 500,
+            "transform": [
+              {
+                "filter": "datum.code == Category_selection"
+              },
+              {
+                "filter": { "param": "brush" }
+              },
+              {
+                "filter": "datum.type == 'export'"
+              }
+            ],
+            "encoding": {
+              "x": {
+                "field": "date",
+                "type": "temporal",
+                "title": "Date",
+                "timeUnit": "yearmonth"
+              },
+              "y": {
+                "aggregate": "sum",
+                "field": "value",
+                "type": "quantitative",
+                "title": "Exports (Millions of Dollars)",
+                "scale": { "domainMid": 0 },
+                "stack": "zero"
+              },
+              "color": {
+                "field": "subcode",
+                "type": "nominal",
+                "title": "Goods",
+                "legend": {
+                  "columns": 1,
+                  "orient": "right",
+                  "labelFontSize": 12,
+                  "titleFontSize": 14,
+                  "symbolLimit": 100,
+                  "labelLimit": 500,  
+                  "labelOverlap": false  
+                }
+              },
+              "tooltip": [
+                { "field": "subcode", "type": "nominal", "title": "Subcategory" },
+                { "field": "date", "type": "temporal", "title": "Date", "timeUnit": "yearmonth" },
+                { "field": "value", "type": "quantitative", "title": "Exports (Millions of Dollars)", "format": ".2f" }
+              ]
+            }
+          },
+          {
+            "mark": {
+              "type": "area",
+              "interpolate": "monotone"
+            },
+            "transform": [
+              {
+                "filter": "datum.code == Category_selection"
+              },
+              {
+                "filter": { "param": "brush" }
+              },
+              {
+                "filter": "datum.type == 'import'"
+              },
+              {
+                "calculate": "-datum.value",
+                "as": "positive_value"
+              }
+            ],
+            "encoding": {
+              "x": {
+                "field": "date",
+                "type": "temporal",
+                "title": "Date",
+                "timeUnit": "yearmonth"
+              },
+              "y": {
+                "aggregate": "sum",
+                "field": "value",
+                "type": "quantitative",
+                "title": "Imports (Millions of Dollars)",
+                "scale": { "domainMid": 0 },
+                "stack": "zero"
+              },
+              "color": {
+                "field": "subcode",
+                "type": "nominal",
+                "title": "Goods",
+                "legend": {
+                  "columns": 1,
+                  "orient": "right",
+                  "labelFontSize": 12,
+                  "titleFontSize": 14,
+                  "symbolLimit": 100,
+                  "labelLimit": 500,  
+                  "labelOverlap": false  
+                }
+              },
+              "tooltip": [
+                { "field": "subcode", "type": "nominal", "title": "Subcategory" },
+                { "field": "date", "type": "temporal", "title": "Date", "timeUnit": "yearmonth" },
+                { "field": "positive_value", "type": "quantitative", "title": "Imports (Millions of Dollars)", "format": ".2f" }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "width": 1000,
+        "height": 120,
+        "mark": "line",
+        "params": [
+          {
+            "name": "brush",
+            "select": {
+              "type": "interval",
+              "encodings": ["x"]
+            }
+          }
+        ],
+        "encoding": {
+          "x": {
+            "field": "date",
+            "type": "temporal",
+            "title": "Brush to Select Time",
+            "timeUnit": "yearmonth"
+          },
+          "y": {
+            "aggregate": "count",
+            "field": "date",
+            "type": "quantitative",
+            "title": "Count of Data Points",
+            "axis": { "tickCount": 3, "grid": false }
+          }
+        }
+      }
+    ]
+  }

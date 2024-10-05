@@ -1,0 +1,75 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 800,
+    "height": 400,
+    "projection": {"type": "equalEarth"},
+     "data": {
+        "url": "https://raw.githubusercontent.com/Gorgon3179/hw10/main/countrylayer.topojson",
+        "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}
+      },
+    "layer": [
+      {
+        "transform": [
+          {
+            "calculate": "'Data is not available for ' + datum.properties.NAME",
+            "as": "note"
+          }
+        ],
+        "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "black"},
+        "encoding": {"tooltip": {"field": "note"}}
+      },
+      {
+        "data": {
+          "url": "https://raw.githubusercontent.com/Gorgon3179/hw10/main/oceanlayer.topojson",
+          "format": {"type": "topojson", "feature": "oceans"}
+        },
+        "mark": {"type": "geoshape", "fill": "skyblue"}
+      },
+      {
+        "data": {
+          "url": "https://raw.githubusercontent.com/Gorgon3179/hw10/main/gridlines.topojson",
+          "format": {"type": "topojson", "feature": "ne_110m_graticules_30"}
+        },
+        "mark": {"type": "geoshape", "fill": null, "stroke": "black"}
+      },
+      {
+        "transform": [
+          {
+            "lookup": "properties.NAME",
+            "from": {
+              "data": {
+                "url": "https://raw.githubusercontent.com/Gorgon3179/hw10/main/export_data.csv"
+              },
+              "key": "Country",
+              "fields": ["Export_US$_Thousand","Total"]
+            }
+          },
+          {
+            "calculate": "100 * datum.Export_US$_Thousand/datum.Total",
+            "as": "Percentage Of Global Exports"
+          }
+        ],
+        "mark": {"type": "geoshape", "stroke": "black"},
+        "encoding": {
+          "color": {
+            "field": "Percentage Of Global Exports",
+            "type": "quantitative",
+            "scale": {
+              "type": "threshold",
+              "domain": [0.00062, 0.00316, 0.00885, 0.02171, 0.04084, 0.07495, 0.14316, 0.33536, 1.12169, 13.58656],
+              "range": ["#a6f3c4","#94dfb8","#82caac","#6fb5a0","#5ca194","#4a8c87","#37787b","#2480b3","#146A94","#0D577A","#124e63","#0a3a51","#003a57"] 
+            }
+          },
+          "tooltip": [
+            {"field": "properties.NAME", "type": "nominal", "title": "Country"},
+            {
+              "field": "Percentage Of Global Exports",
+              "type": "quantitative",
+              "format": ".2f"
+            }
+          ]
+        }
+      }
+    ],
+    "config": {}
+  }
